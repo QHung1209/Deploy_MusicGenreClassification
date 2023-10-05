@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tải lên File Audio</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            text-align: center;
+            padding: 20px;
+        }
+
+        h2 {
+            color: #333;
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        label.upload-label {
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        label.upload-label:hover {
+            background-color: #0056b3;
+        }
+
+        #audio {
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .text-center {
+            margin-top: 20px;
+            color: #333;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h2>Tải lên File Audio</h2>
+        <form action="{{ url_for('predict')}}" method="post" enctype="multipart/form-data">
+            <label for="upload" class="upload-label">Chọn tệp âm thanh</label>
+            <input type="file" name="audiofile" accept=".wav" id="upload" onchange="playAudio()" />
+            <audio id="audio" controls>
+                <source src="" id="src" />
+            </audio>
+            <button type="submit" class="btn btn-primary btn-block btn-large">Dự đoán thể loại âm thanh</button>
+        </form>
+
+        <p class="text-center">Kết quả dự đoán: {{ ', '.join(prediction) }}</p>
+    </div>
+
+    <script>
+        function playAudio() {
+            var fileInput = document.getElementById('upload');
+            var audio = document.getElementById('audio');
+            var source = document.getElementById('src');
+            var selectedFile = fileInput.files[0];
+            source.src = URL.createObjectURL(selectedFile);
+            audio.load();
+        }
+    </script>
+</body>
+
+</html>
