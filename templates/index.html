@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 
 <head>
     <meta charset="UTF-8">
@@ -18,7 +18,8 @@
         }
 
         .container {
-            background-color: #fff;
+            background-color: rgba(12, 1, 1, 0.5);
+            /* Màu nền trong suốt */
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
@@ -29,15 +30,15 @@
         }
 
         label.upload-label {
-            background-color: #007bff;
-            color: #fff;
+            background-color: #22d3c2;
+            color: #301111;
             padding: 10px 20px;
             border-radius: 5px;
             cursor: pointer;
         }
 
         label.upload-label:hover {
-            background-color: #0056b3;
+            background-color: #22d3c2;
         }
 
         #audio {
@@ -46,37 +47,52 @@
         }
 
         .text-center {
-            margin-top: 20px;
+            margin-top: 30px;
             color: #333;
         }
+
+        video {
+            max-width: 100%;
+            height: auto;
+        }
+
+        #background-video {
+            position: fixed;
+            right: 0;
+            bottom: 0;
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            z-index: -1;
+          
+        }
+
+        form {
+            background-color: rgba(255, 255, 255, 0);
+            padding: 20px;
+        }
+        
     </style>
+
 </head>
 
 <body>
     <div class="container">
-        <h2>Tải lên File Audio</h2>
+        <video autoplay muted loop id="background-video">
+            <source src="/templates/background.mp4" type="video\mp4">
+        </video>
         <form action="{{ url_for('predict')}}" method="post" enctype="multipart/form-data">
-            <label for="upload" class="upload-label">Chọn tệp âm thanh</label>
+            <label for="upload" class="upload-label">Upload</label>
             <input type="file" name="audiofile" accept=".wav" id="upload" onchange="playAudio()" />
             <audio id="audio" controls>
                 <source src="" id="src" />
             </audio>
-            <button type="submit" class="btn btn-primary btn-block btn-large">Dự đoán thể loại âm thanh</button>
+            <button type="submit" class="btn btn-primary btn-block btn-large">Check the genre</button>
         </form>
 
-        <p class="text-center">Kết quả dự đoán: {{ ', '.join(prediction) }}</p>
+        <p class="text-center">{{ ', '.join(prediction) }}</p>
     </div>
-
-    <script>
-        function playAudio() {
-            var fileInput = document.getElementById('upload');
-            var audio = document.getElementById('audio');
-            var source = document.getElementById('src');
-            var selectedFile = fileInput.files[0];
-            source.src = URL.createObjectURL(selectedFile);
-            audio.load();
-        }
-    </script>
 </body>
 
 </html>
