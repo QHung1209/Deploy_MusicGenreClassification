@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tải lên File Audio</title>
+    <title>Music Genre Classifier</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -18,8 +18,7 @@
         }
 
         .container {
-            background-color: rgba(12, 1, 1, 0.5);
-            /* Màu nền trong suốt */
+            background-color: #fff;
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
@@ -30,15 +29,15 @@
         }
 
         label.upload-label {
-            background-color: #22d3c2;
-            color: #301111;
+            background-color: #007bff;
+            color: #fff;
             padding: 10px 20px;
             border-radius: 5px;
             cursor: pointer;
         }
 
         label.upload-label:hover {
-            background-color: #22d3c2;
+            background-color: #0056b3;
         }
 
         #audio {
@@ -47,52 +46,46 @@
         }
 
         .text-center {
-            margin-top: 30px;
+            margin-top: 20px;
             color: #333;
         }
-
-        video {
-            max-width: 100%;
-            height: auto;
-        }
-
-        #background-video {
-            position: fixed;
-            right: 0;
-            bottom: 0;
-            min-width: 100%;
-            min-height: 100%;
-            width: auto;
-            height: auto;
-            z-index: -1;
-          
-        }
-
-        form {
-            background-color: rgba(255, 255, 255, 0);
-            padding: 20px;
-        }
-        
     </style>
-
 </head>
 
 <body>
     <div class="container">
-        <video autoplay muted loop id="background-video">
-            <source src="/templates/background.mp4" type="video\mp4">
-        </video>
+        <h2>Music Genre Classifier</h2>
         <form action="{{ url_for('predict')}}" method="post" enctype="multipart/form-data">
             <label for="upload" class="upload-label">Upload</label>
-            <input type="file" name="audiofile" accept=".wav" id="upload" onchange="playAudio()" />
+            <input type="file" name="audiofile" accept=".wav" id="upload" onchange="updateAudioSource()" />
+            <input type="hidden" name="audio_url" id="audio_url" value="" />
             <audio id="audio" controls>
                 <source src="" id="src" />
             </audio>
             <button type="submit" class="btn btn-primary btn-block btn-large">Check the genre</button>
         </form>
-
-        <p class="text-center">{{ ', '.join(prediction) }}</p>
+        <p class="text-center">{{', '.join(prediction) }}</p>
     </div>
+    
+
+    <script>
+        function updateAudioSource() {
+            const fileInput = document.getElementById("upload");
+            const audio = document.getElementById("audio");
+            const audioUrlInput = document.getElementById("audio_url");
+    
+            const file = fileInput.files[0];
+            if (file) {
+                const objectURL = URL.createObjectURL(file);
+                audio.src = objectURL;
+                audioUrlInput.value = objectURL;
+            } else {
+                audio.src = "";
+                audioUrlInput.value = "";
+            }
+        }
+    </script>
+    
 </body>
 
 </html>

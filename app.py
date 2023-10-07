@@ -100,7 +100,6 @@ def predict():
     list_genre, counts = np.unique(prediction, return_counts=True)
     total_elements = len(metadata)
     result = list_genre[counts / total_elements >= 0.4]
-
     return render_template("index.html", prediction=result)
 
 
