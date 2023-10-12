@@ -16,17 +16,10 @@ def home():
 def getmetadata(filename):
 
     y, sr = librosa.load(filename)
-    
     audio_length_samples = len(y)
     test_metadata = []
-
-    # Độ dài của mỗi đoạn (3 giây)
     segment_length_samples = sr * 3
-
-    # Tạo danh sách để chứa các đoạn âm thanh
     collection = []
-
-    # Chia tệp âm thanh thành các đoạn
     start = 0
     while start < audio_length_samples:
         end = start + segment_length_samples
@@ -36,8 +29,7 @@ def getmetadata(filename):
         collection.append(segment)
         start = end
     for y in collection:
-        # fetching tempo
-
+        
         onset_env = librosa.onset.onset_strength(y=y, sr=sr)
         tempo = librosa.beat.tempo(onset_envelope=onset_env, sr=sr)
 
@@ -94,6 +86,8 @@ def getmetadata(filename):
 def predict():
     file = request.files['audiofile']
     audio_path = "./audio/" + file.filename
+    if(audio_path == "./audio/"):
+        return render_template("index.html", prediction="Upload the audio")
     file.save(audio_path)
     metadata = scaler.transform(getmetadata(audio_path))
     prediction = clf.predict(metadata)
