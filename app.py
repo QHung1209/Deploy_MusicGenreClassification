@@ -4,8 +4,8 @@ import librosa
 import numpy as np
 app = Flask(__name__)
 
-scaler = pickle.load(open(r"models\Transform.pkl", 'rb'))
-clf = pickle.load(open(r"models\Classification.pkl", 'rb'))
+scaler = pickle.load(open("./models/Transform.pkl", 'rb'))
+clf = pickle.load(open("./models/Classification.pkl", 'rb'))
 
 
 @app.route("/")
