@@ -4,9 +4,9 @@ import librosa
 import numpy as np
 app = Flask(__name__)
 
-scaler = pickle.load(open("New folder\Deploy_MusicGenreClassification\models\Transform.pkl", 'rb'))
+scaler = pickle.load(open(".\models\Transform.pkl", 'rb'))
 
-clf = pickle.load(open("New folder\Deploy_MusicGenreClassification\models\Classification.pkl", 'rb'))
+clf = pickle.load(open(".\models\Classification.pkl", 'rb'))
 
 @app.route("/")
 def home():
@@ -88,7 +88,7 @@ def predict():
     
    
     audio_path = ".\\audio\\" + file.filename
-    if(audio_path == "New folder\\Deploy_MusicGenreClassification\\audio\\"):
+    if(audio_path == ".\\audio\\"):
         return render_template("index.html", prediction="Upload the audio")
     file.save(audio_path)
     metadata = scaler.transform(getmetadata(audio_path))
