@@ -4,9 +4,9 @@ import librosa
 import numpy as np
 app = Flask(__name__)
 
-scaler = pickle.load(open("./models/Transform.pkl", 'rb'))
-clf = pickle.load(open("./models/Classification.pkl", 'rb'))
+scaler = pickle.load(open("New folder\Deploy_MusicGenreClassification\models\Transform.pkl", 'rb'))
 
+clf = pickle.load(open("New folder\Deploy_MusicGenreClassification\models\Classification.pkl", 'rb'))
 
 @app.route("/")
 def home():
@@ -85,15 +85,17 @@ def getmetadata(filename):
 @app.route("/predict", methods=["POST"])
 def predict():
     file = request.files['audiofile']
-    audio_path = "./audio/" + file.filename
-    if(audio_path == "./audio/"):
+    
+   
+    audio_path = ".\\audio\\" + file.filename
+    if(audio_path == "New folder\\Deploy_MusicGenreClassification\\audio\\"):
         return render_template("index.html", prediction="Upload the audio")
     file.save(audio_path)
     metadata = scaler.transform(getmetadata(audio_path))
     prediction = clf.predict(metadata)
     list_genre, counts = np.unique(prediction, return_counts=True)
-    total_elements = len(metadata)
-    result = list_genre[counts / total_elements >= 0.4]
+    total_elements = len(prediction)
+    result = [list_genre[i] for i in range(len(list_genre)) if (counts[i] / total_elements)>=0.35]
     return render_template("index.html", prediction=result)
 
 
