@@ -97,12 +97,12 @@
             <button type="submit" class="btn btn-primary btn-block btn-large">Check the genre</button>
         </form>
         <p class="text-center">
-            {% if prediction == "Upload the audio" %}
-            Upload the audio 
-            {% else %}
-            {{ ', '.join(prediction) }}
-            {{prediction2}}
-            {% endif %}
+
+            {% if prediction is not none %}
+        <p>{{thegenre}} {{ ', '.join(prediction) }}</p>
+        {% endif %}
+
+
 
         </p>
     </div>

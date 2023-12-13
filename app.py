@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request
+from keras.models import load_model
 import pickle
 import librosa
 import numpy as np
@@ -6,9 +7,22 @@ app = Flask(__name__)
 
 scaler = pickle.load(open("models\Scaler.pkl", 'rb'))
 
-clf = pickle.load(open("models\Classification.pkl", 'rb'))
+#clf = pickle.load(open("models\Classification.pkl", 'rb'))
 
-#model = pickle.load(open(".\models\model.pkl", 'rb'))
+nn_model = load_model("models\\nn.h5")
+
+label_mapping = {
+    0: 'Blues',
+    1: 'Classical',
+    2: 'Country',
+    3: 'Disco',
+    4: 'Hiphop',
+    5: 'Jazz',
+    6: 'Metal',
+    7: 'Pop',
+    8: 'Reggae',
+    9: 'Rock',
+}
 
 @app.route("/")
 def home():
@@ -18,10 +32,17 @@ def home():
 def getmetadata(filename):
 
     y, sr = librosa.load(filename)
+    
     audio_length_samples = len(y)
     test_metadata = []
+
+    # Độ dài của mỗi đoạn (3 giây)
     segment_length_samples = sr * 3
+
+    # Tạo danh sách để chứa các đoạn âm thanh
     collection = []
+
+    # Chia tệp âm thanh thành các đoạn
     start = 0
     while start < audio_length_samples:
         end = start + segment_length_samples
@@ -31,7 +52,8 @@ def getmetadata(filename):
         collection.append(segment)
         start = end
     for y in collection:
-        
+        # fetching tempo
+
         onset_env = librosa.onset.onset_strength(y=y, sr=sr)
         tempo = librosa.beat.tempo(onset_envelope=onset_env, sr=sr)
 
@@ -93,12 +115,22 @@ def predict():
         return render_template("index.html", prediction="Upload the audio")
     file.save(audio_path)
     metadata = scaler.transform(getmetadata(audio_path))
-    prediction = clf.predict(metadata)
-    #prediction2 = model.predict(metadata)
+    #prediction = clf.predict(metadata)
+    pred = nn_model.predict(metadata)
+    prediction = np.argmax(pred, axis=1)
     list_genre, counts = np.unique(prediction, return_counts=True)
     total_elements = len(prediction)
-    result = [list_genre[i] for i in range(len(list_genre)) if (counts[i] / total_elements)>=0.4]
-    return render_template("index.html", prediction=result)
+    result = []
+    #result = [list_genre[i] for i in range(len(list_genre)) if (counts[i] / total_elements)>=0.35]
+    
+    sorted_indices = np.argsort(-counts)
+    result.append(list_genre[sorted_indices[0]])
+    if len(list_genre) > 1:
+        result.append(list_genre[sorted_indices[1]])
+    genre = []
+    for label in result:
+        genre.append(label_mapping.get(label))
+    return render_template("index.html", prediction = genre, thegenre = "The genres of the song: ")
  #, prediction2 = prediction2)
 
 
