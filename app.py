@@ -9,7 +9,7 @@ scaler = pickle.load(open("models\Scaler.pkl", 'rb'))
 
 #clf = pickle.load(open("models\Classification.pkl", 'rb'))
 
-nn_model = load_model("models\\nn.h5")
+nn_model = load_model("models\DNN_model.h5")
 
 label_mapping = {
     0: 'Blues',
@@ -20,8 +20,7 @@ label_mapping = {
     5: 'Jazz',
     6: 'Metal',
     7: 'Pop',
-    8: 'Reggae',
-    9: 'Rock',
+    8: 'Rock'
 }
 
 @app.route("/")
@@ -112,7 +111,7 @@ def predict():
 
     audio_path = ".\\audio\\" + file.filename
     if(audio_path == ".\\audio\\"):
-        return render_template("index.html", prediction="Upload the audio")
+        return render_template("index.html", prediction="ok")
     file.save(audio_path)
     metadata = scaler.transform(getmetadata(audio_path))
     #prediction = clf.predict(metadata)
@@ -120,13 +119,13 @@ def predict():
     prediction = np.argmax(pred, axis=1)
     list_genre, counts = np.unique(prediction, return_counts=True)
     total_elements = len(prediction)
-    result = []
-    #result = [list_genre[i] for i in range(len(list_genre)) if (counts[i] / total_elements)>=0.35]
+    
+    result = [list_genre[i] for i in range(len(list_genre)) if (counts[i] / total_elements)>=0.4]
     
     sorted_indices = np.argsort(-counts)
-    result.append(list_genre[sorted_indices[0]])
-    if len(list_genre) > 1:
-        result.append(list_genre[sorted_indices[1]])
+   
+    if len(result) == 0:
+        result.append(list_genre[sorted_indices[0]])
     genre = []
     for label in result:
         genre.append(label_mapping.get(label))

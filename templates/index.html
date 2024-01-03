@@ -99,7 +99,11 @@
         <p class="text-center">
 
             {% if prediction is not none %}
-        <p>{{thegenre}} {{ ', '.join(prediction) }}</p>
+            {% if prediction == 'ok' %}
+        <p>Upload the audio</p>
+        {% else %}
+        <p>{{ thegenre }} {{ ', '.join(prediction) }}</p>
+        {% endif %}
         {% endif %}
 
 
