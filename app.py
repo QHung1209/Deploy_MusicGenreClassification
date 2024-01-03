@@ -35,8 +35,8 @@ def getmetadata(filename):
     audio_length_samples = len(y)
     test_metadata = []
 
-    # Độ dài của mỗi đoạn (3 giây)
-    segment_length_samples = sr * 3
+    # Độ dài của mỗi đoạn (10 giây)
+    segment_length_samples = sr * 10
 
     # Tạo danh sách để chứa các đoạn âm thanh
     collection = []
