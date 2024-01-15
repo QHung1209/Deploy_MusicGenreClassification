@@ -50,9 +50,11 @@ def getmetadata(filename):
         segment = y[start:end]
         collection.append(segment)
         start = end
+    length_start = len(collection[0])
     for y in collection:
         # fetching tempo
-
+        if len(y) != length_start:
+            break
         onset_env = librosa.onset.onset_strength(y=y, sr=sr)
         tempo = librosa.beat.tempo(onset_envelope=onset_env, sr=sr)
 
