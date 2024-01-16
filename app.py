@@ -20,7 +20,8 @@ label_mapping = {
     5: 'Jazz',
     6: 'Metal',
     7: 'Pop',
-    8: 'Rock'
+    8: 'RnB',
+    9: 'Rock'
 }
 
 @app.route("/")
@@ -131,7 +132,7 @@ def predict():
     genre = []
     for label in result:
         genre.append(label_mapping.get(label))
-    return render_template("index.html", prediction = genre, thegenre = "The genres of the song: ")
+    return render_template("index.html", prediction = genre)
  #, prediction2 = prediction2)
 
 
